@@ -11,7 +11,7 @@ public class MusicPlayer : MonoBehaviour {
 		DontDestroyOnLoad(gameObject);
 	}
 	void Start () {
-		Invoke ("LoadFirstScene", 2f); //string referenced
+		Invoke ("LoadFirstScene", 4f); //string referenced
 	}
 
 	void LoadFirstScene(){
