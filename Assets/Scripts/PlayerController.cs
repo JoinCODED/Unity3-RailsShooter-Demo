@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] float positionYawFactor = 1.5f;
 	[SerializeField] float controlRollFactor = -20f;
 
+	bool isControlEnabled = true;
+
 	float xThrow, yThrow; 
 
 
@@ -25,9 +27,20 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		ProcessTranslation ();
-		ProcessRotation ();
+		if (isControlEnabled) {
+			ProcessTranslation ();
+			ProcessRotation ();
+		}
+	}
 
+	
+
+	void OnPlayerDeath(){
+		isControlEnabled = false;
+	}
+
+	void OnCollisionEnter(Collision collision){
+		print ("A collision occured!");
 	}
 
 	private void ProcessRotation() {
