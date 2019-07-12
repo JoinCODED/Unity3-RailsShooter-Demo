@@ -14,7 +14,7 @@ Make sure that everyone has Unity 2017.2+ for this project
 5. Right Click `Hierarchy > 3D Object> Terrain`
 6. Select terrain component. If the brush settings do not appear, click the 3 lines of the inspector (on the top right), and change it from debug to normal mode.
 7. While the terrain is selected,  Look for resolution in the inspector. 
-8. Make the terrain width and height to be 1000.
+8. Make the terrain width and length to be 1000.
 9. Move terrain position to X-250 Y 0 Z -250 to make stuff around the origin of the world
 10. Select the raise/lower terrain option. Start painting on the terrain to raise it. Shift + mouse to lower it back down. Opacity is how fast things move up and lower
 11. Maximum Terrain height is set at 600  (click at the gear icon in the Terrain in inspector)
