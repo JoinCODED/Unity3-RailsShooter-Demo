@@ -78,6 +78,7 @@ Make sure that everyone has Unity 2017.2+ for this project
     }
 } 
 ```
+Import UnityEngine.SceneManagement;
 62. Show them that the Music Player object is getting destroyed between scenes. We do not want that. 
 63. Show them the [Unity Execution order](https://docs.unity3d.com/Manual/ExecutionOrder.html). It's Awake > Start > Update... Update... Update
 64. So on awake, we need to not to destroy the game object.
@@ -89,6 +90,9 @@ Make sure that everyone has Unity 2017.2+ for this project
 ```
 66. Now, the song plays between scenes. Now, it's time to make the ship fly around a certain path.
 67. The easiest way to do this is to make use of an existing asset pack that Unity 2017 comes with. `Assets > Import Package > Utility`. Import all of the Assets. Some have dependencies.
+If the package doesnt exist download it from the following link through the asset store
+https://assetstore.unity.com/packages/essentials/asset-packs/standard-assets-32351
+
 68. Standard Assets > Utility. Has a couple of useful scripts:
 a. WaypointCircuit.cs
 b. WaypontProgressTracker.cs
