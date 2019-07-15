@@ -222,11 +222,14 @@ public class PlayerController : MonoBehaviour {
 105. Try to see which order of rotations (red, green blue) does it make it easier to get to the X-30 Y30 and Z0 rotation
 106. If you pitch first, then yaw right, you get weird results! 
 107.  Create a `ProcessRotation() method, and call it in `Update()`:
+
 ```
 private void ProcessRotation() {
 transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
 } 
 ```
+
+
 108. `Transform.localRotation.x` is a Quaternion. YOU CAN'T manipulate it directly. You have to create one first. It's representation of a rotation. X Y Z and Euler angles. 
 109. Set the rotation to 90f. Show them what happens.
 110. `Quaternion.Euler` is a static function that returns a Quaternion value, and sticks it into the `localRotation`. Internally, we do not need to know what it does!
@@ -234,6 +237,8 @@ transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
 112. Increase the value of it to show dramatic it can be if more than 5.
 113. Show them the rotation couplings table. The pitch control factor is about 2x the Y position. NOTE: factors change from project to project. You have to keep experimenting to get the right factors.  
 114. So, for `ProcessRotation()`:
+
+
 ```
     [SerializeField] float positionPitchFactor = -2f; 
 
@@ -247,10 +252,16 @@ transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
 
     } 
 ```
+
+
 115. Well, now we need to determine the pitch. For `ProcessRotation()`:
+
+
 ```
 [SerializeField] float controlPitchFactor = -2f; 
 float pitch = (transform.localPosition.y * positionPitchFactor) 
+```
+
 116. Great, now we also need to take into consideration the Pitch factor due to controls.
 
 ```
@@ -276,6 +287,7 @@ transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
 ```
 
 117. Now, we need to calculate the yaw and the roll (refer to the table to know what is coupled with what): 
+
 ```
 [SerializeField] float positionYawFactor = 1.5f;
 [SerializeField] float controlRollFactor = -20f; 
@@ -294,9 +306,8 @@ transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
 
 } 
 
-
-
 ```
+
 118. Created a Landing Pad to see what changes we are applying. Put it under the `Player Ship`. Prefab the `Landing Pad`.
 119. Create a Particle System effect as a child of the `Player Ship`. Right click `Player Ship > Effects > Particle System`.
 120. Rename particle system to `Bullets`.
@@ -354,8 +365,8 @@ transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
 172. Now, the `Music Player` is loading a scene which is weird. So create a new `SceneLoader` script. Let us create a separation of concern.
 173. Inside the `Splash` scene, create a new `Empty` GameObject called `Scene Loader`.
 174. Attach the `SceneLoader` script to the `Scene Loader` game object. Move the following code from `MusicPlayer.cs` to `SceneLoader.cs`:
-```
 
+```
 using UnityEngine.SceneManagement; 
 
 void Start () {
@@ -370,16 +381,18 @@ void Update () {
 void LoadFirstScene(){
 SceneManager.LoadScene(1);
 } 
-
 ```
+
 175. Play the game to show things are still working the same. 
 176. Collisions
 177. In the `PlayerController.cs` script, Use the `OnCollisionEnter` to print something out.
+
 ```
     void OnCollisionEnter(Collision collision){
 	print ("A collision occured!");
     }
 ```
+
 178. Nothing happens! 
 a. There are two types of collisions. First, normal collisions (we've seen before. Which process physics).
 b. Then there are triggers
@@ -395,15 +408,18 @@ k. So if we want the ship to Trigger, the ship MUST have a `Rigidbody` on it.
 179. Enemy prefabs - Add Box Collider on them. As long as they have colliders on them, it doesn't matter. 
 180. Do the same with obstacle prefab. Add a Box collider to it. Check the static button (has to do with lighting) 
 181. With all that said, add the `OnTriggerEnter` function in `PlayerController.cs`:
+
 ```
     void OnTriggerEnter(Collider other) {
 	print("Something triggered");
     } 
 ```
+
 182. Sending messages between components.
 183. Add a new script to the `Player Ship`. Name it `CollisionHandler`.
 184. Move the `OnTriggerEnter` function to `CollisionHandler.cs` (to keep things tidy).
 185. Now, when a trigger occurs, we want to start the death sequence of a player. Inside `CollisionHandler.cs`:
+
 ```
 void OnTriggerEnter(Collider other) {
 StartDeathSequence();
@@ -414,7 +430,9 @@ print("Start death sequence");
 SendMessage("OnPlayerDeath"); //string referenced
 } 
 ```
+
 186. Now, someone has to catch the message, and run the `OnPlayerDeath` sequence. In `PlayerController.cs`:
+
 ```
     bool isControlEnabled = true; 
 
@@ -422,7 +440,9 @@ SendMessage("OnPlayerDeath"); //string referenced
 	isControlEnabled = false;
     } 
 ```
+
 187. Now, in the `PlayerControlller.cs` `Update()`, we check for `isControlEnabled`. If so, process movement. If not, stay still:
+
 ```
 
 void Update () {
@@ -434,9 +454,12 @@ if (isControlEnabled) {
 ```
 
 188. Great. But now we also would like to enable the explosion effect. In `CollisionHandler.cs`, expose a GameObject to the inspector:
+
+
 ```
 [SerializeField] GameObject deathFX; 
 ```
+
 189. Now, drag and drop the `Explosion` prefab onto the `Death FX` field in the inspector.
 190. Also, drag and drop the prefab onto the `Player Ship` itself.
 191. Uncheck the `Explosion` Gameobject to disable it. We only want to enable it in the case of a trigger.
@@ -448,28 +471,44 @@ deathFX.SetActive(true);
 StartDeathSequence();
 } 
 ```
+
 193. Now, let us load levels: 
+
+```
 [SerializeField] float levelLoadDelay = 3f; 
+```
 
 Define a `ReloadScene` function
+
+```
     private void ReloadScene(){
 	SceneManager.LoadScene(1);
     } 
+ ```
+ 
 194. Call the function in the OnTriggerEnter:
+
+```
 void OnTriggerEnter(Collider other) {
 deathFX.SetActive(true);
 StartDeathSequence();
 Invoke("ReloadScene", levelLoadDelay);
 } 
+```
+
 195. Click on the bullets. Go to the inspector > Particle System >  Enable collision.
 196. Open the Collision option. Change the Type from `Planes` to `World`. 
 197. Finally, check the `Send Collison Messages` box.
 198. In the Hierarchy, select all `Enemy Ship` objects. Disable the Is Trigger on the Box Collider.
 199. Still with all `Enemy Ship` objects selected, add a component `Script`, and name it `Enemy`.  
 200. The gameObject is from the context of the enemy
+
+```
 void OnParticleCollision(GameObject other){
 print("Particles collided with enemy" + gameObject.name);
 }  
+```
+
 201. Show them the print statement
 202. Now, we destroy the GameObject
     void OnParticleCollision(GameObject other){
@@ -492,6 +531,7 @@ print("Particles collided with enemy" + gameObject.name);
 213. Drag the .ttf file into font, and it sets it up!
 214. Click on the `Text` in `Hierarchy`. Add a new script called `ScoreBoard`.
 215. In `ScoreBoard.cs`:
+
 ```
 using UnityEngine.UI; 
     int score;
@@ -523,6 +563,7 @@ scoreText.text = score.ToString();
 ```
 217. Now, we need to call this function every time an `Enemy Spaceship` dies.
 218. In `Enemy.cs`:
+
 ```
 [SerializeField] int scorePerHit = 12;
 
