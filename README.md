@@ -583,6 +583,48 @@ Instantiate (deathFX, transform.position, Quaternion.identity);
 
 ```
 
+------------------------------------------Adding code for Bullets control---------------------------------------
+
+
+```
+
+
+[SerializeField] GameObject[] guns;
+
+
+void Update()
+    {
+        if (isControlEnabled)
+        {
+            ProcessTranslation();
+            ProcessRotation();
+            ProcessFiring();
+        }
+    }
+
+ void ProcessFiring()
+    {
+        if (CrossPlatformInputManager.GetButton("Fire"))
+        {
+            SetGunsActive(true);
+        }
+        else
+        {
+            SetGunsActive(false);
+        }
+    }
+
+    private void SetGunsActive(bool isActive)
+    {
+        foreach (GameObject gun in guns) // care may affect death FX
+        {
+            var emissionModule = gun.GetComponent<ParticleSystem>().emission;
+            emissionModule.enabled = isActive;
+        }
+    }
+
+```
+
 	
 	
 
